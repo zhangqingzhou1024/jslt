@@ -79,8 +79,22 @@ public class ObjectComprehension extends AbstractNode {
           if (!keyNode.isTextual())
             throw new JsltException("Object comprehension must have string as key, not " + keyNode, location);
           object.set(keyNode.asText(), valueNode);
+        } else if (valueNode.isNull()) {
+          JsonNode jsonNode = context.get("key");
+          if (jsonNode.isTextual()) {
+            object.set(jsonNode.asText(), null);
+          }
+        } else if (valueNode.isObject()) {
+          JsonNode jsonNode = context.get("key");
+          if (jsonNode.isTextual()) {
+            object.set(jsonNode.asText(), JsonNodeFactory.instance.objectNode());
+          }
+        } else if (valueNode.isArray()) {
+          JsonNode jsonNode = context.get("key");
+          if (jsonNode.isTextual()) {
+            object.set(jsonNode.asText(), JsonNodeFactory.instance.arrayNode());
+          }
         }
-      }
     }
     return object;
   }
